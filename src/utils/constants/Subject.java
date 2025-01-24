@@ -1,4 +1,4 @@
-package utils;
+package utils.constants;
 
 public enum Subject {
     ARABIC(1),

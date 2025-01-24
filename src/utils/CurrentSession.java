@@ -1,5 +1,7 @@
 package utils;
 
+import utils.constants.Role;
+
 public class CurrentSession {
 
     private CurrentSession(){}

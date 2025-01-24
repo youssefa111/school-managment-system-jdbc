@@ -6,7 +6,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import utils.CurrentSession;
-import utils.Role;
+import utils.constants.Role;
 
 @Aspect
 public class SecurityAspect {
