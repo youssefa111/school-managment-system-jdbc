@@ -81,13 +81,13 @@ public class DatabaseUtil {
     private static final String createSubjectTable = """
             CREATE TABLE IF NOT EXISTS subjects (
             id SERIAL PRIMARY KEY,
-            subject_name VARCHAR(100),
+            subject_name VARCHAR(100)
             )
             """;
     private static final String createLevelTable = """
             CREATE TABLE IF NOT EXISTS levels (
             id SERIAL PRIMARY KEY,
-            level_name VARCHAR(100),
+            level_name VARCHAR(100)
             )
             """;
     private static final String createSubjectStudentTable = """
