@@ -11,6 +11,10 @@ import utils.constants.Role;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public class StudentServiceImpl implements StudentService, AuthService<Student> {
@@ -21,13 +25,14 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
         logger.info("======= Start login =======");
         try(
                 Connection conn = DatabaseUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement("SELECT * FROM student where username = ? and password = ?");
+                PreparedStatement ps = conn.prepareStatement("SELECT id FROM student where username = ? and password = ?");
                 ResultSet rs = ps.executeQuery()
         ){
             if (rs.next()){
                 CurrentSession currentSession  = CurrentSession.getInstance();
                 currentSession.setAuthenticated(Boolean.TRUE);
                 currentSession.setCurrentRole(Role.STUDENT);
+                currentSession.setUserId(rs.getInt("id"));
             } else {
                 logger.info("Username or password incorrect");
             }
@@ -69,24 +74,30 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
 
     @IsStudent
     @Override
-    public void seeInfo(int studentId) {
+    public void seeInfo() {
         logger.info("======= Start seeInfo =======");
+        CurrentSession currentSession  = CurrentSession.getInstance();
         String sql = "SELECT * FROM students where id = ?";
         try(
                 Connection conn = DatabaseUtil.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()
                 ){
-            if (rs.next()){
-                Student student = new Student();
-                student.setId(rs.getInt("id"));
-                student.setName(rs.getString("name"));
-                student.setEmail(rs.getString("email"));
-                student.setAge(rs.getInt("age"));
-                student.setAddress(rs.getString("address"));
-                student.setLevelId(rs.getInt("level_id"));
-                student.setJoinDate(LocalDate.parse(rs.getString("join_date")));
-                logger.info(student.toString());
+            ps.setInt(1,currentSession.getUserId());
+            try(ResultSet rs = ps.executeQuery())
+            {
+                if (rs.next()){
+                    Student student = new Student();
+                    student.setId(rs.getInt("id"));
+                    student.setName(rs.getString("name"));
+                    student.setEmail(rs.getString("email"));
+                    student.setAge(rs.getInt("age"));
+                    student.setAddress(rs.getString("address"));
+                    student.setLevelId(rs.getInt("level_id"));
+                    student.setJoinDate(LocalDate.parse(rs.getString("join_date")));
+                    logger.info(student.toString());
+                }
+            } catch (SQLException e) {
+                logger.warning(e.getMessage());
             }
 
         } catch (SQLException e) {
@@ -97,17 +108,53 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
 
     @IsStudent
     @Override
-    public void seeSubjects(int studentId) {
+    public void seeSubjects() {
         logger.info("======= Start seeSubjects =======");
-
+        String sql = "SELECT subject_name FROM subjects s INNER JOIN subject_student ss " +
+                "ON s.id = ss.subject_id WHERE ss.student_id = ?";
+        try(
+                Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ){
+            ps.setInt(1,CurrentSession.getInstance().getUserId());
+            try(ResultSet rs = ps.executeQuery()){
+                List<String> subjects = new ArrayList<>();
+                while (rs.next()){
+                    subjects.add(rs.getString("subject_name"));
+                }
+                logger.info("Here are your subjects of this year : " + subjects);
+            } catch (SQLException e){
+                logger.warning(e.getMessage());
+            }
+        }
+        catch (SQLException e){
+            logger.warning(e.getMessage());
+        }
         logger.info("======= End seeSubjects =======");
     }
 
     @IsStudent
     @Override
-    public void seeGrades(int studentId) {
+    public void seeGrades() {
         logger.info("======= Start seeGrades =======");
-
+        String sql = "SELECT s.subject_name ,g.grade FROM grades g INNER JOIN subject_student ss " +
+                "ON g.ss_id = ss.ss_id  INNER JOIN subjects s ON ss.subject_id = s.id WHERE ss.student_id = ?";
+        try(
+                Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ){
+            ps.setInt(1,CurrentSession.getInstance().getUserId());
+            try(ResultSet rs = ps.executeQuery()){
+                Map<String,Double> subjectGrades = new HashMap<>();
+                while (rs.next()){
+                    subjectGrades.put(rs.getString("subject_name"),rs.getDouble("grade"));
+                }
+                logger.info("Here are your grades of this year : " + subjectGrades);
+            }
+        }
+        catch (SQLException e){
+            logger.warning(e.getMessage());
+        }
         logger.info("======= End seeGrades =======");
     }
 }

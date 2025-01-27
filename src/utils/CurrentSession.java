@@ -6,6 +6,7 @@ public class CurrentSession {
 
     private CurrentSession(){}
 
+
     private static class CurrentSessionHolder{
         private static final CurrentSession INSTANCE = new CurrentSession();
     }
@@ -16,6 +17,7 @@ public class CurrentSession {
 
     private Role currentRole;
     private boolean isAuthenticated;
+    private int userId;
 
     public Role getCurrentRole() {
         return currentRole;
@@ -27,8 +29,11 @@ public class CurrentSession {
     public boolean isAuthenticated() {
         return isAuthenticated;
     }
-
     public void setAuthenticated(boolean isAuthenticated) {
         this.isAuthenticated = isAuthenticated;
     }
+
+    public int getUserId() {return userId;}
+    public void setUserId(int userId) {this.userId = userId;}
+
 }

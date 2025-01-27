@@ -46,5 +46,9 @@ public interface ValidatorsUtil {
                 && isValidSubject(teacher.getSubjectId());
     }
 
+    static boolean isLoginValid(String email, String password){
+       return isValidEmail(email) && isValidPassword(password);
+    }
+
 
 }
