@@ -152,7 +152,13 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
                 while (rs.next()){
                     subjectGrades.put(rs.getString("subject_name"),rs.getDouble("grade"));
                 }
-                logger.info("Here are your grades of this year:- " + JsonConverterUtil.convertToJson(subjectGrades));
+                if(subjectGrades.isEmpty())
+                {
+                    logger.info("There are no grades yet for any subject");
+                }
+                else{
+                    logger.info("Here are your grades of this year:- " + JsonConverterUtil.convertToJson(subjectGrades));
+                }
             }
         }
         catch (SQLException e){
