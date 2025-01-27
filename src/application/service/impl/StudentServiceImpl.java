@@ -5,6 +5,7 @@ import application.service.AuthService;
 import application.service.StudentService;
 import utils.CurrentSession;
 import utils.DatabaseUtil;
+import utils.JsonConverterUtil;
 import utils.ValidatorsUtil;
 import utils.authorization.IsStudent;
 import utils.constants.Role;
@@ -33,6 +34,8 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
                 currentSession.setAuthenticated(Boolean.TRUE);
                 currentSession.setCurrentRole(Role.STUDENT);
                 currentSession.setUserId(rs.getInt("id"));
+
+                logger.info("Login Success");
             } else {
                 logger.info("Username or password incorrect");
             }
@@ -94,7 +97,7 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
                     student.setAddress(rs.getString("address"));
                     student.setLevelId(rs.getInt("level_id"));
                     student.setJoinDate(LocalDate.parse(rs.getString("join_date")));
-                    logger.info(student.toString());
+                    logger.info(JsonConverterUtil.convertToJson(student));
                 }
             } catch (SQLException e) {
                 logger.warning(e.getMessage());
@@ -122,7 +125,7 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
                 while (rs.next()){
                     subjects.add(rs.getString("subject_name"));
                 }
-                logger.info("Here are your subjects of this year : " + subjects);
+                logger.info("Here are your subjects of this year:- \n " + JsonConverterUtil.convertToJson(subjects));
             } catch (SQLException e){
                 logger.warning(e.getMessage());
             }
@@ -149,7 +152,7 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
                 while (rs.next()){
                     subjectGrades.put(rs.getString("subject_name"),rs.getDouble("grade"));
                 }
-                logger.info("Here are your grades of this year : " + subjectGrades);
+                logger.info("Here are your grades of this year:- " + JsonConverterUtil.convertToJson(subjectGrades));
             }
         }
         catch (SQLException e){
