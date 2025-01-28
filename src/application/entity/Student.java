@@ -2,7 +2,7 @@ package application.entity;
 
 import java.time.LocalDate;
 
-public class Student {
+public class Student extends User {
     private int id;
     private String email;
     private String password;

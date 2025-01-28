@@ -1,5 +1,6 @@
 package utils;
 
+import application.entity.User;
 import utils.constants.Role;
 
 public class CurrentSession {
@@ -18,6 +19,7 @@ public class CurrentSession {
     private Role currentRole;
     private boolean isAuthenticated;
     private int userId;
+    private User user;
 
     public Role getCurrentRole() {
         return currentRole;
@@ -35,5 +37,8 @@ public class CurrentSession {
 
     public int getUserId() {return userId;}
     public void setUserId(int userId) {this.userId = userId;}
+
+    public User getUser() {return user;}
+    public void setUser(User user) {this.user = user;}
 
 }

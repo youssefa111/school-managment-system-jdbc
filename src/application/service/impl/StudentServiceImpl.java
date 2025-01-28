@@ -24,24 +24,48 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
     @Override
     public void login(String username, String password) {
         logger.info("======= Start login =======");
-        try(
-                Connection conn = DatabaseUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement("SELECT id FROM student where username = ? and password = ?");
-                ResultSet rs = ps.executeQuery()
-        ){
-            if (rs.next()){
-                CurrentSession currentSession  = CurrentSession.getInstance();
-                currentSession.setAuthenticated(Boolean.TRUE);
-                currentSession.setCurrentRole(Role.STUDENT);
-                currentSession.setUserId(rs.getInt("id"));
+        if(ValidatorsUtil.FormValidator.isLoginValid(username, password)){
+            try(
+                    Connection conn = DatabaseUtil.getConnection();
+                    PreparedStatement ps = conn.prepareStatement("SELECT * FROM students where username = ? and password = ?")
+            ){
+                ps.setString(1, username);
+                ps.setString(2, password);
 
-                logger.info("Login Success");
-            } else {
-                logger.info("Username or password incorrect");
+                try(ResultSet rs = ps.executeQuery()){
+                    if (rs.next()){
+                        CurrentSession currentSession  = CurrentSession.getInstance();
+                        currentSession.setAuthenticated(Boolean.TRUE);
+                        currentSession.setCurrentRole(Role.STUDENT);
+                        currentSession.setUserId(rs.getInt("id"));
+
+                        Student student = new Student();
+                        student.setId(rs.getInt("id"));
+                        student.setName(rs.getString("name"));
+                        student.setEmail(rs.getString("email"));
+                        student.setAge(rs.getInt("age"));
+                        student.setAddress(rs.getString("address"));
+                        student.setLevelId(rs.getInt("level_id"));
+                        student.setJoinDate(LocalDate.parse(rs.getString("join_date")));
+
+                        currentSession.setUser(student);
+                        logger.info("Login Success");
+                    } else {
+                        logger.info("Username or password incorrect");
+                    }
+                } catch (SQLException e){
+                    logger.warning(e.getMessage());
+
+                }
+
+            } catch (SQLException e) {
+                logger.warning(e.getMessage());
             }
-        } catch (SQLException e) {
-            logger.warning(e.getMessage());
         }
+        else {
+            logger.info("Please make sure you enter valid username and password");
+        }
+
         logger.info("======= End login =======");
     }
 
@@ -49,28 +73,30 @@ public class StudentServiceImpl implements StudentService, AuthService<Student> 
     public void register(Student entity) {
         logger.info("======= Start register =======");
         String sql = "INSERT INTO students(name,email,password,age,address,level_id,join_date) VALUES (?,?,?,?,?,?,?)";
-        try(
-                Connection conn = DatabaseUtil.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-        ) {
-            if (ValidatorsUtil.isStudentRegisterValid(entity)){
-                ps.setString(1,entity.getName());
-                ps.setString(2,entity.getEmail());
-                ps.setString(3,entity.getPassword());
-                ps.setInt(4,entity.getAge());
-                ps.setString(5,entity.getAddress());
-                ps.setInt(6,entity.getLevelId());
-                ps.setDate(7, Date.valueOf(LocalDate.now()));
+        if (ValidatorsUtil.FormValidator.isStudentRegisterValid(entity)){
+            try(
+                    Connection conn = DatabaseUtil.getConnection();
+                    PreparedStatement ps = conn.prepareStatement(sql);
+            ) {
 
-                ps.executeUpdate();
-                logger.info("Student register successful!!");
-            }
-            else {
-                logger.info("Student register failed, please  validate your data and try again");
-            }
+                    ps.setString(1,entity.getName());
+                    ps.setString(2,entity.getEmail());
+                    ps.setString(3,entity.getPassword());
+                    ps.setInt(4,entity.getAge());
+                    ps.setString(5,entity.getAddress());
+                    ps.setInt(6,entity.getLevelId());
+                    ps.setDate(7, Date.valueOf(LocalDate.now()));
 
-        } catch (SQLException e) {
-            logger.warning(e.getMessage());
+                    ps.executeUpdate();
+                    logger.info("Student register successful!!");
+
+
+            } catch (SQLException e) {
+                logger.warning(e.getMessage());
+            }
+        }
+        else {
+            logger.info("Student register failed, please  validate your data and try again");
         }
         logger.info("======= End register =======");
     }
