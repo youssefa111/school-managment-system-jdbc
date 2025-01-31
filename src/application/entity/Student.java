@@ -26,6 +26,16 @@ public class Student extends User {
         this.levelId = levelId;
     }
 
+    public Student(int id, String email, String name, int age, String address, LocalDate joinDate, int levelId) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.joinDate = joinDate;
+        this.levelId = levelId;
+    }
+
     public int getId() {
         return id;
     }

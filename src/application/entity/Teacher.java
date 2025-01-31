@@ -27,6 +27,16 @@ public class Teacher extends User {
         this.subjectId = subjectId;
     }
 
+    public Teacher(int id, String email, String name, int age, String address, LocalDate joinDate, int subjectId) {
+        this.id = id;
+        this.email = email;
+        this.name = name;
+        this.age = age;
+        this.address = address;
+        this.joinDate = joinDate;
+        this.subjectId = subjectId;
+    }
+
     public int getId() {
         return id;
     }

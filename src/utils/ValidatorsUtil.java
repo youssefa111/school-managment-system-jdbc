@@ -1,9 +1,6 @@
 package utils;
 
-import application.entity.Level;
-import application.entity.Student;
-import application.entity.Subject;
-import application.entity.Teacher;
+import application.entity.*;
 import application.service.SystemService;
 import application.service.impl.SystemServiceImpl;
 
@@ -60,6 +57,12 @@ public interface ValidatorsUtil {
                         && isValidAge(teacher.getAge())
                         && isValidAddress(teacher.getAddress())
                         && isValidSubject(teacher.getSubjectId());
+            }
+
+            static boolean isAdminRegisterValid(Admin admin){
+                return isValidEmail(admin.getEmail())
+                        && isValidPassword(admin.getPassword())
+                        && isValidName(admin.getName());
             }
 
             static boolean isLoginValid(String email, String password){

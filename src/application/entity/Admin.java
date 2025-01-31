@@ -3,16 +3,16 @@ package application.entity;
 public class Admin  extends User {
     int id ;
     String name;
-    String username;
+    String email;
     String password;
 
     public Admin() {
     }
 
-    public Admin(int id, String name, String username, String password) {
+    public Admin(int id, String name, String email, String password) {
         this.id = id;
         this.name = name;
-        this.username = username;
+        this.email = email;
         this.password = password;
     }
 
@@ -32,12 +32,12 @@ public class Admin  extends User {
         this.name = name;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String username) {
+        this.email = username;
     }
 
     public String getPassword() {
