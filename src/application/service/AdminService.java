@@ -22,9 +22,18 @@ public interface AdminService {
     void getAllStudent();
     void deleteStudent(int studentId);
     void deleteAllStudent(int[] studentId);
+    void addStudentToClass(int studentId, int classId);
 
     // CRUD Teacher
     void getAllTeacher();
     void deleteTeacher(int teacherId);
     void deleteAllTeachers(int[] teacherIds);
+    void addTeacherToClass(int teacherId, int classId);
+
+    // CRUD Class
+    void getAllClasses();
+    void addClass(String className , int capacity);
+    void deleteClass(int classId);
+    void updateClass(int classId , int capacity);
+
 }

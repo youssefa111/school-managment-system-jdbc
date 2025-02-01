@@ -84,6 +84,8 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
         logger.info("======= end register =======");
     }
 
+    // =============== Subject Section ===========================
+
     @IsAdmin
     @Override
     public void addSubject(String subjectName) {
@@ -164,6 +166,8 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
         }
         logger.info("======= end getAllSubject =======");
     }
+
+    // =============== Level Section ===========================
 
     @IsAdmin
     @Override
@@ -246,6 +250,8 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
         logger.info("======= end getAllLevel =======");
     }
 
+    // =============== Student Section ===========================
+
     @IsAdmin
     @Override
     public void getAllStudent() {
@@ -303,6 +309,13 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
         logger.info("======= end deleteAllStudent =======");
     }
 
+    @Override
+    public void addStudentToClass(int studentId, int classId) {
+
+    }
+
+    // =============== Teacher Section ===========================
+
     @IsAdmin
     @Override
     public void getAllTeacher() {
@@ -358,6 +371,33 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
     public void deleteAllTeachers(int[] teacherIds) {
         logger.info("======= start deleteAllTeachers =======");
         logger.info("======= end deleteAllTeachers =======");
+    }
+
+    @Override
+    public void addTeacherToClass(int teacherId, int classId) {
+
+    }
+
+    // =============== Class Section ===========================
+
+    @Override
+    public void getAllClasses() {
+
+    }
+
+    @Override
+    public void addClass(String className, int capacity) {
+
+    }
+
+    @Override
+    public void deleteClass(int classId) {
+
+    }
+
+    @Override
+    public void updateClass(int classId, int capacity) {
+
     }
 
 
