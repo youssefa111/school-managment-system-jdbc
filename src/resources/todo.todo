@@ -1,0 +1,16 @@
+- Teacher fun:
+    - implement fun seeMyStudents
+    - add the missing validation in fun addGrades
+
+- Admin fun:
+    - implement classes CRUD functions
+    - implement fun addTeacherToClass and student
+    - implement batch deleteAll
+    - add in deleteTeacher and deleteStudent what it will affect on other tables like (Grades,Subject,Student_Subject,Class_Teacher)
+    - add fun addAllClasses and addAllLevels in batch
+    - add fun addAllTeachers and addAllStudent in batches to fill database with many students and teachers
+
+- create function and procedure to get data or anything inside database and call it by jdbc
+- create view for get some shared data inside database and call it by jdbc
+- create trigger inside database for example do something like notify for student when the grade of each subject is inserted by teacher
+- create a job (scheduler) for anything
