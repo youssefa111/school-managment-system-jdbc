@@ -11,7 +11,6 @@ import utils.authorization.IsAdmin;
 import utils.constants.Role;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -102,7 +101,6 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
             logger.warning(e.getMessage());
         }
         logger.info("======= end addSubject =======");
-
     }
 
     @IsAdmin
@@ -283,6 +281,18 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
     @Override
     public void deleteStudent(int studentId) {
         logger.info("======= start deleteStudent =======");
+        String sql = "DELETE FROM students WHERE id = ?";
+        try(
+                Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ){
+            ps.setInt(1,studentId);
+            var result = ps.executeUpdate();
+            logger.info("deleteStudent with id: "+studentId +" => " + result);
+        }
+        catch(SQLException e){
+            logger.warning(e.getMessage());
+        }
         logger.info("======= end deleteStudent =======");
     }
 
@@ -328,6 +338,18 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
     @Override
     public void deleteTeacher(int teacherId) {
         logger.info("======= start deleteTeacher =======");
+        String sql = "DELETE FROM teachers WHERE id = ?";
+        try(
+                Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+        ){
+            ps.setInt(1,teacherId);
+            var result = ps.executeUpdate();
+            logger.info("deleteTeacher with id: "+teacherId +" => " + result);
+        }
+        catch(SQLException e){
+            logger.warning(e.getMessage());
+        }
         logger.info("======= end deleteTeacher =======");
     }
 
