@@ -12,14 +12,6 @@ public class DatabaseUtil {
 
     private DatabaseUtil() {}
 
-    private static final class InstanceHolder {
-        private static final DatabaseUtil instance = new DatabaseUtil();
-    }
-
-    public static DatabaseUtil getInstance() {
-        return InstanceHolder.instance;
-    }
-
     private static Connection connection;
 
     public static Connection getConnection() throws SQLException {
