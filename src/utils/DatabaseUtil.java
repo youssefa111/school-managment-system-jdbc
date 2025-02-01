@@ -55,6 +55,7 @@ public class DatabaseUtil {
             age INT,
             address VARCHAR(255),
             level_id INT,
+            class_id INT,
             join_date date
             )
             """;
@@ -84,6 +85,19 @@ public class DatabaseUtil {
             subject_name VARCHAR(100)
             )
             """;
+    private static final String createClassTable = """
+            CREATE TABLE IF NOT EXISTS classes (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(10),
+            capacity INT
+            )
+            """;
+    private static final String createClassTeacherTable = """
+            CREATE TABLE IF NOT EXISTS teacher_classes (
+            teacher_id INT,
+            class_id INT
+            )
+            """;
     private static final String createLevelTable = """
             CREATE TABLE IF NOT EXISTS levels (
             id SERIAL PRIMARY KEY,
@@ -105,11 +119,13 @@ public class DatabaseUtil {
             )
             """;
     private static final String[] tablesSqlList = new String[] {
-            createStudentTable,
-            createTeacherTable,
             createAdminTable,
+            createClassTable,
             createSubjectTable,
             createLevelTable,
+            createStudentTable,
+            createTeacherTable,
+            createClassTeacherTable,
             createSubjectStudentTable,
             createGradesTable
     };

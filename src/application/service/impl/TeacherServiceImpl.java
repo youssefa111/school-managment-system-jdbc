@@ -162,7 +162,7 @@ public class TeacherServiceImpl implements TeacherService , AuthService<Teacher>
     @Override
     public void seeMyStudents() {
         logger.info("======= start seeMyStudents =======");
-
+        String sql = "";
         logger.info("======= end seeMyStudents =======");
     }
 }

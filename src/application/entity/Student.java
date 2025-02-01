@@ -11,6 +11,7 @@ public class Student extends User {
     private String address;
     private LocalDate joinDate;
     private int levelId;
+    private int classId;
 
     public Student() {
     }
@@ -99,4 +100,7 @@ public class Student extends User {
     public void setLevelId(int levelId) {
         this.levelId = levelId;
     }
+
+    public int getClassId() {return classId;}
+    public void setClassId(int classId) {this.classId = classId;}
 }
