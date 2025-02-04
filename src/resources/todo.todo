@@ -12,5 +12,6 @@
 
 - create function and procedure to get data or anything inside database and call it by jdbc
 - create view for get some shared data inside database and call it by jdbc
-- create trigger inside database for example do something like notify for student when the grade of each subject is inserted by teacher
+- create trigger inside database for add students automatically when they register to classes by order and when the capacity of class exceeded then automatically add to next class
+
 - create a job (scheduler) for anything
