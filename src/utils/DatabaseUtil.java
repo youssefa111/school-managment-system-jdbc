@@ -38,6 +38,14 @@ public class DatabaseUtil {
         }
     }
 
+    private static final String createAdminTable = """
+            CREATE TABLE IF NOT EXISTS admins (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(100),
+            email VARCHAR(100),
+            password VARCHAR(100)
+            )
+            """;
     private static final String createStudentTable = """
             CREATE TABLE IF NOT EXISTS students (
             id SERIAL PRIMARY KEY,
@@ -61,14 +69,6 @@ public class DatabaseUtil {
             address VARCHAR(255),
             subject_id INT,
             join_date date
-            )
-            """;
-    private static final String createAdminTable = """
-            CREATE TABLE IF NOT EXISTS admins (
-            id SERIAL PRIMARY KEY,
-            name VARCHAR(100),
-            email VARCHAR(100),
-            password VARCHAR(100)
             )
             """;
     private static final String createSubjectTable = """

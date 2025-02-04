@@ -1,5 +1,7 @@
 package application.service.impl;
 
+import application.dto.StudentDto;
+import application.entity.Class;
 import application.entity.Teacher;
 import application.service.AuthService;
 import application.service.TeacherService;
@@ -12,7 +14,10 @@ import utils.constants.Role;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 public class TeacherServiceImpl implements TeacherService , AuthService<Teacher>{
 
@@ -130,16 +135,17 @@ public class TeacherServiceImpl implements TeacherService , AuthService<Teacher>
 
     @IsTeacher
     @Override
-    public void addGrades(int studentId, double grade) {
+    public void addGrades(int studentId,int classId, double grade) {
         logger.info("======= start addGrades =======");
         String sql = "INSERT INTO grades VALUES (ss_id,?) WHERE ss_id=(SELECT ss_id FROM subject_student WHERE subject_id = ? AND student_id = ?)";
         if (ValidatorsUtil.TeacherValidator.isValidGrade(grade))
         {
-            try(
-                    Connection conn = DatabaseUtil.getConnection();
-                    PreparedStatement ps = conn.prepareStatement(sql)
-            ){
-                //TODO: Validate that studentId is related to this teacher
+            var studentsAtClass = seeMyStudentsAtClass(classId).stream().map(StudentDto::id).collect(Collectors.toSet());
+            if (studentsAtClass.contains(studentId)){
+                try(
+                        Connection conn = DatabaseUtil.getConnection();
+                        PreparedStatement ps = conn.prepareStatement(sql)
+                ){
                     CurrentSession currentSession  = CurrentSession.getInstance();
                     Teacher teacher = (Teacher) currentSession.getUser();
 
@@ -148,21 +154,77 @@ public class TeacherServiceImpl implements TeacherService , AuthService<Teacher>
                     ps.setInt(3,teacher.getSubjectId());
                     ps.executeUpdate();
                     logger.info("Grades added successful!");
-            } catch (SQLException e) {
-                logger.warning(e.getMessage());
+                } catch (SQLException e) {
+                    logger.warning(e.getMessage());
+                }
             }
+            else{
+                logger.info("Wrong Operation, you try to add grade for student not in this class");
+            }
+
         }
         else {
-            logger.info("Grades added failed, please validate your data and try again");
+            logger.info("Grades added failed, please validate your data from [0,100] and try again");
         }
         logger.info("======= end addGrades =======");
     }
 
     @IsTeacher
     @Override
-    public void seeMyStudents() {
+    public void seeMyClasses() {
+        logger.info("======= start seeMyClasses =======");
+        String sql = "SELECT classes FROM classes INNER JOIN teacher_classes tc ON classes.id = tc.class_id WHERE tc.teacher_id = ?";
+        try(
+                Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+        ){
+            CurrentSession currentSession  = CurrentSession.getInstance();
+            Teacher teacher = (Teacher) currentSession.getUser();
+            ps.setInt(1,teacher.getId());
+            try(ResultSet rs = ps.executeQuery()) {
+                List<Class> classes = new ArrayList<>();
+                while (rs.next()) {
+                    classes.add(new application.entity.Class(rs.getInt("id"),rs.getString("name"),rs.getInt("capacity")));
+                }
+                if (classes.isEmpty()) {
+                    logger.info("you still have not classes yet!");
+                } else {
+                    logger.info("your classes: " + JsonConverterUtil.convertToJson(classes));
+                }
+            }
+        }
+        catch (SQLException e) {
+            logger.warning(e.getMessage());
+        }
+        logger.info("======= end seeMyClasses =======");
+
+    }
+
+    @IsTeacher
+    @Override
+    public List<StudentDto> seeMyStudentsAtClass(int classId) {
         logger.info("======= start seeMyStudents =======");
-        String sql = "";
+        String sql = "SELECT s.id,s.name,s.email FROM students s INNER JOIN teacher_classes tc ON s.class_id = tc.class_id WHERE tc.teacher_id = ? AND tc.class_id = ?";
+        try(
+                Connection conn = DatabaseUtil.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)
+        ) {
+            CurrentSession currentSession  = CurrentSession.getInstance();
+            Teacher teacher = (Teacher) currentSession.getUser();
+            ps.setInt(1,teacher.getId());
+            ps.setInt(2,classId);
+            try(ResultSet rs = ps.executeQuery()){
+                List<StudentDto> students = new ArrayList<>();
+                while (rs.next()){
+                    students.add(new StudentDto(rs.getInt("id"),rs.getString("name"),rs.getString("email")));
+                }
+                logger.info("Here its your students in class with id{"+ classId + "}: "+JsonConverterUtil.convertToJson(students));
+                return students;
+            }
+        } catch (SQLException e) {
+            logger.warning(e.getMessage());
+        }
         logger.info("======= end seeMyStudents =======");
+        return List.of();
     }
 }

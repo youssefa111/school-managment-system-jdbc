@@ -1,6 +1,6 @@
 - Teacher fun:
-    - implement fun seeMyStudents
-    - add the missing validation in fun addGrades
+    - implement fun seeMyStudents [DONE]
+    - add the missing validation in fun addGrades [DONE]
 
 - Admin fun:
     - implement classes CRUD functions
@@ -10,7 +10,7 @@
     - add fun addAllClasses and addAllLevels in batch
     - add fun addAllTeachers and addAllStudent in batches to fill database with many students and teachers
 
-- create function and procedure to get data or anything inside database and call it by jdbc
+- create function and procedure to fill data in database like levels and classes and subjects and  to get data or anything inside database and call it by jdbc
 - create view for get some shared data inside database and call it by jdbc
 - create trigger inside database for add students automatically when they register to classes by order and when the capacity of class exceeded then automatically add to next class
 
