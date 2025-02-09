@@ -11,6 +11,7 @@ import utils.authorization.IsAdmin;
 import utils.constants.Role;
 
 import java.sql.*;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -144,29 +145,6 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
         logger.info("======= end updateSubject =======");
     }
 
-    @IsAdmin
-    @Override
-    public void getAllSubject() {
-        logger.info("======= start getAllSubject =======");
-        String sql = "SELECT * FROM subjects";
-        try(
-                Connection conn = DatabaseUtil.getConnection();
-                Statement stmt = conn.createStatement();
-        ){
-           try(ResultSet result = stmt.executeQuery(sql)) {
-               List<Subject> subjectList = new ArrayList<>();
-               while(result.next()) {
-                   subjectList.add(new Subject(result.getInt("id"),result.getString("subject_name")));
-               }
-               logger.info("getAllSubject => " + JsonConverterUtil.convertToJson(subjectList));
-           }
-        }
-        catch (SQLException e){
-            logger.warning(e.getMessage());
-        }
-        logger.info("======= end getAllSubject =======");
-    }
-
     // =============== Level Section ===========================
 
     @IsAdmin
@@ -227,28 +205,6 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
         logger.info("======= end updateLevel =======");
     }
 
-    @IsAdmin
-    @Override
-    public void getAllLevel() {
-        logger.info("======= start getAllLevel =======");
-        String sql = "SELECT * FROM levels";
-        try(
-                Connection conn = DatabaseUtil.getConnection();
-                Statement stmt = conn.createStatement();
-        ){
-            try(ResultSet result = stmt.executeQuery(sql)) {
-                List<Level> levelList = new ArrayList<>();
-                while(result.next()) {
-                    levelList.add(new Level(result.getInt("id"),result.getString("level_name")));
-                }
-                logger.info("getAllLevel => " + JsonConverterUtil.convertToJson(levelList));
-            }
-        }
-        catch (SQLException e){
-            logger.warning(e.getMessage());
-        }
-        logger.info("======= end getAllLevel =======");
-    }
 
     // =============== Student Section ===========================
 
@@ -294,8 +250,7 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
                 ){
             ps.setInt(1,studentId);
             var result = ps.executeUpdate();
-            logger.info("deleteStudent with id: "+studentId +" => " + result);
-        }
+            logger.info(String.format("deleteStudent with id: %d => %d", studentId, result));        }
         catch(SQLException e){
             logger.warning(e.getMessage());
         }
@@ -358,7 +313,7 @@ public class AdminServiceImpl implements AdminService , AuthService<Admin> {
         ){
             ps.setInt(1,teacherId);
             var result = ps.executeUpdate();
-            logger.info("deleteTeacher with id: "+teacherId +" => " + result);
+            logger.info(MessageFormat.format("deleteTeacher with id: {0} => {1}", teacherId, result));
         }
         catch(SQLException e){
             logger.warning(e.getMessage());
