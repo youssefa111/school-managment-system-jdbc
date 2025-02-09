@@ -29,16 +29,25 @@ public class DatabaseUtil {
                 Connection connection = getConnection();
                 Statement statement = connection.createStatement()
         ) {
-            for (String sqlStatement : tablesSqlList){
-                statement.execute(sqlStatement);
+            connection.setAutoCommit(false);
+
+            for (String sqlStatement : tablesSqlList) {
+                statement.addBatch(sqlStatement);
             }
+            statement.executeBatch();
+            connection.commit();
             logger.info("Database initialized Successfully");
-        }catch (SQLException e){
-            logger.warning(e.getMessage());
+
+        } catch (SQLException e) {
+            connection.rollback();
+            logger.warning("Database initialization failed. Rolled back changes. Error: " + e.getMessage());
+        }
+        finally {
+            connection.setAutoCommit(true);
         }
     }
 
-    private static final String createAdminTable = """
+    private static final String CREATE_ADMIN_TABLE = """
             CREATE TABLE IF NOT EXISTS admins (
             id SERIAL PRIMARY KEY,
             name VARCHAR(100),
@@ -46,7 +55,7 @@ public class DatabaseUtil {
             password VARCHAR(100)
             )
             """;
-    private static final String createStudentTable = """
+    private static final String CREATE_STUDENT_TABLE = """
             CREATE TABLE IF NOT EXISTS students (
             id SERIAL PRIMARY KEY,
             name VARCHAR(100),
@@ -59,7 +68,7 @@ public class DatabaseUtil {
             join_date date
             )
             """;
-    private static final String createTeacherTable = """
+    private static final String CREATE_TEACHER_TABLE = """
             CREATE TABLE IF NOT EXISTS teachers (
             id SERIAL PRIMARY KEY,
             name VARCHAR(100),
@@ -71,39 +80,39 @@ public class DatabaseUtil {
             join_date date
             )
             """;
-    private static final String createSubjectTable = """
+    private static final String CREATE_SUBJECT_TABLE = """
             CREATE TABLE IF NOT EXISTS subjects (
             id SERIAL PRIMARY KEY,
             subject_name VARCHAR(100)
             )
             """;
-    private static final String createClassTable = """
+    private static final String CREATE_CLASS_TABLE = """
             CREATE TABLE IF NOT EXISTS classes (
             id SERIAL PRIMARY KEY,
             name VARCHAR(10),
             capacity INT
             )
             """;
-    private static final String createClassTeacherTable = """
+    private static final String CREATE_CLASS_TEACHER_TABLE = """
             CREATE TABLE IF NOT EXISTS teacher_classes (
             teacher_id INT,
             class_id INT
             )
             """;
-    private static final String createLevelTable = """
+    private static final String CREATE_LEVEL_TABLE = """
             CREATE TABLE IF NOT EXISTS levels (
             id SERIAL PRIMARY KEY,
             level_name VARCHAR(100)
             )
             """;
-    private static final String createSubjectStudentTable = """
+    private static final String CREATE_SUBJECT_STUDENT_TABLE = """
             CREATE TABLE IF NOT EXISTS subject_student (
             ss_id SERIAL PRIMARY KEY,
             subject_id INT,
             student_id INT
             )
             """;
-    private static final String createGradesTable = """
+    private static final String CREATE_GRADES_TABLE = """
             CREATE TABLE IF NOT EXISTS grades (
             id SERIAL PRIMARY KEY,
             ss_id INT,
@@ -111,14 +120,14 @@ public class DatabaseUtil {
             )
             """;
     private static final String[] tablesSqlList = new String[] {
-            createAdminTable,
-            createClassTable,
-            createSubjectTable,
-            createLevelTable,
-            createStudentTable,
-            createTeacherTable,
-            createClassTeacherTable,
-            createSubjectStudentTable,
-            createGradesTable
+            CREATE_ADMIN_TABLE,
+            CREATE_CLASS_TABLE,
+            CREATE_SUBJECT_TABLE,
+            CREATE_LEVEL_TABLE,
+            CREATE_STUDENT_TABLE,
+            CREATE_TEACHER_TABLE,
+            CREATE_CLASS_TEACHER_TABLE,
+            CREATE_SUBJECT_STUDENT_TABLE,
+            CREATE_GRADES_TABLE
     };
 }
